@@ -10,10 +10,11 @@ const Layout = () => {
             <header className={styles.header} role={"banner"}>
                 <div className={styles.headerContainer}>
                     <Link to="/" className={styles.headerTitleContainer}>
-                        <h3 className={styles.headerTitle}>GPT + Enterprise data | Sample</h3>
+                        <h3 className={styles.headerTitle}>Busca Corporativa | GPT</h3>
                     </Link>
                     <nav>
                         <ul className={styles.headerNavList}>
+                            {/*    
                             <li>
                                 <NavLink to="/" className={({ isActive }) => (isActive ? styles.headerNavPageLinkActive : styles.headerNavPageLink)}>
                                     Chat
@@ -24,14 +25,15 @@ const Layout = () => {
                                     Ask a question
                                 </NavLink>
                             </li>
+                            */}
                             <li className={styles.headerNavLeftMargin}>
-                                <a href="https://aka.ms/entgptsearch" target={"_blank"} title="Github repository link">
+                                <a href="https://www.samarco.com.br" target={"_blank"} >
                                     <img
                                         src={github}
-                                        alt="Github logo"
+                                        alt="SAMARCO logo"
                                         aria-label="Link to github repository"
-                                        width="20px"
-                                        height="20px"
+                                        width="250px"
+                                        height="130px"
                                         className={styles.githubLogo}
                                     />
                                 </a>

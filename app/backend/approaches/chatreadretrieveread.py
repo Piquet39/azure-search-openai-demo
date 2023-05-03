@@ -9,10 +9,19 @@ from text import nonewlines
 # (answer) with that prompt.
 class ChatReadRetrieveReadApproach(Approach):
     prompt_prefix = """<|im_start|>system
-Assistant helps the company employees with their healthcare plan questions, and questions about the employee handbook. Be brief in your answers.
-Answer ONLY with the facts listed in the list of sources below. If there isn't enough information below, say you don't know. Do not generate answers that don't use the sources below. If asking a clarifying question to the user would help, ask the question.
-For tabular information return it as an html table. Do not return markdown format.
-Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brakets to reference the source, e.g. [info1.txt]. Don't combine sources, list each source separately, e.g. [info1.txt][info2.pdf].
+You are a virtual assistant at SAMARCO searching for information in internal documents.
+You help employees better understand internal procedures and find technical information.
+Your mission is to be accurate in gathering information.
+Respond ONLY with the facts listed in the source list below.
+Bring the answer most identical to the source used.
+You only provide factual responses to queries and do not provide responses that are unrelated to SAMARCO.
+If there isn't enough information below, say you don't know. Please do not generate responses that do not use the sources below.
+If asking the user a clarifying question would help, ask the question.
+For tabular information, return it as an HTML table. Do not return in markdown format.
+Each source has a name followed by a colon and the actual information, always include the source name for each fact you use in the answer.
+Use square brackets to reference the source, for example [info1.txt][info2.pdf].
+Source files follow the same name prefix: SMIN-POP-GMU-XXX-01.pdf where XXX is a sequence of 3 numbers. Example SMIN-POP-GMU-003-01.pdf, SMIN-POP-GMU-002-01.pdf
+The source files were sliced in pages and renamed before index and a sequencial number were added as suffix, you MUST considere the parts in the same context. Example: original file SMIN-POP-GMU-003-01.pdf was sliced in 4 files SMIN-POP-GMU-003-01-0.pdf, SMIN-POP-GMU-003-01-1.pdf, SMIN-POP-GMU-003-01-2.pdf, SMIN-POP-GMU-003-01-3.pdf. 
 {follow_up_questions_prompt}
 {injected_prompt}
 Sources:
@@ -21,16 +30,15 @@ Sources:
 {chat_history}
 """
 
-    follow_up_questions_prompt_content = """Generate three very brief follow-up questions that the user would likely ask next about their healthcare plan and employee handbook. 
+    follow_up_questions_prompt_content = """Generate three very brief follow-up questions that the user would likely ask next about SAMARCO documents. 
     Use double angle brackets to reference the questions, e.g. <<Are there exclusions for prescriptions?>>.
     Try not to repeat questions that have already been asked.
     Only generate questions and do not generate any text before or after the questions, such as 'Next Questions'"""
 
-    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about employee healthcare plans and the employee handbook.
+    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about SAMARCO information.
     Generate a search query based on the conversation and the new question. 
     Do not include cited source filenames and document names e.g info.txt or doc.pdf in the search query terms.
     Do not include any text inside [] or <<>> in the search query terms.
-    If the question is not in English, translate the question to English before generating the search query.
 
 Chat History:
 {chat_history}
@@ -98,7 +106,8 @@ Search query:
         completion = openai.Completion.create(
             engine=self.chatgpt_deployment, 
             prompt=prompt, 
-            temperature=overrides.get("temperature") or 0.7, 
+            temperature=overrides.get("temperature") or 0.0, 
+            #temperature=overrides.get("temperature") or 0.7, 
             max_tokens=1024, 
             n=1, 
             stop=["<|im_end|>", "<|im_start|>"])
